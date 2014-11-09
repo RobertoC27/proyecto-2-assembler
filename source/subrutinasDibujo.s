@@ -91,7 +91,7 @@ DibujarPersonaje:
 	push {iBrendan}
 	bl drawImage
 	
-	add posx,#5
+	@add posx,#5
 	guardarX posx
 	
 	pop {r4-r12}
@@ -141,9 +141,9 @@ las coordenadas para dibujar el personaje
 	ldr posy,=posBrendany
 	ldr posy,[posy]
 	
-	dibujos:
+	dibujosD:
 		pausa
-		paso1:
+		paso1D:
 		ldr dimensionesBrendan, =altoderecha
 		ldr iBrendan, =imagenderecha
 		coordenadas posx,posy
@@ -156,7 +156,7 @@ las coordenadas para dibujar el personaje
 		
 		
 		pausa
-		paso2:
+		paso2D:
 		ldr dimensionesBrendan, =altoderecha1
 		ldr iBrendan, =imagenderecha1
 		coordenadas posx,posy
@@ -169,7 +169,7 @@ las coordenadas para dibujar el personaje
 		
 		
 		pausa
-		paso3:
+		paso3D:
 		ldr dimensionesBrendan, =altoderecha2
 		ldr iBrendan, =imagenderecha2
 		coordenadas posx,posy
@@ -180,8 +180,141 @@ las coordenadas para dibujar el personaje
 		@rectangulo posx,posy,#5,#24
 		
 		add posx,#5
-		ldr r0,=posBrendanx
-		str posx,[r0]
+		guardarX posx
+		
+	pop {r4-r12}
+	pop {pc}
+	.unreq posx
+	.unreq posy
+	.unreq dimensionesBrendan
+	.unreq iBrendan
+/*
+subrutina que hace la animacion de caminar del personaje
+parametros:
+en las etiquetas
+posBrendanx
+posBrendany
+las coordenadas para dibujar el personaje
+*/
+.global CaminarAbajo
+	CaminarAbajo:
+	push {lr}
+	push {r4-r12}
+	posx .req r4
+	posy .req r5
+	dimensionesBrendan .req r6
+	iBrendan .req r7
+	@ posx final -> 503
+	
+	@cargar las posiciones iniciales de donde dibujar
+	ldr posx,=posBrendanx
+	ldr posx,[posx]
+	ldr posy,=posBrendany
+	ldr posy,[posy]
+	
+	dibujosAb:
+		pausa
+		paso1Ab:
+		ldr dimensionesBrendan, =altoatras
+		ldr iBrendan, =imagenatras
+		coordenadas posx,posy
+		ldrh r2, [dimensionesBrendan,#2] // Ancho 
+		ldrh r3, [dimensionesBrendan] // Alto
+		push {iBrendan}
+		bl drawImage
+		sub posy,#5
+		
+		
+		pausa
+		paso2Ab:
+		ldr dimensionesBrendan, =altoatras1
+		ldr iBrendan, =imagenatras1
+		coordenadas posx,posy
+		ldrh r2, [dimensionesBrendan,#2] // Ancho 
+		ldrh r3, [dimensionesBrendan] // Alto
+		push {iBrendan}
+		bl drawImage
+		sub posy,#5
+		
+		
+		pausa
+		paso3Ab:
+		ldr dimensionesBrendan, =altoatras2
+		ldr iBrendan, =imagenatras2
+		coordenadas posx,posy
+		ldrh r2, [dimensionesBrendan,#2] // Ancho 
+		ldrh r3, [dimensionesBrendan] // Alto
+		push {iBrendan}
+		bl drawImage
+		sub posy,#5
+		guardarY posy
+		
+	pop {r4-r12}
+	pop {pc}
+	.unreq posx
+	.unreq posy
+	.unreq dimensionesBrendan
+	.unreq iBrendan
+/*
+subrutina que hace la animacion de caminar del personaje
+parametros:
+en las etiquetas
+posBrendanx
+posBrendany
+las coordenadas para dibujar el personaje
+*/
+.global CaminarArriba
+	CaminarArriba:
+	push {lr}
+	push {r4-r12}
+	posx .req r4
+	posy .req r5
+	dimensionesBrendan .req r6
+	iBrendan .req r7
+	@ posx final -> 503
+	
+	@cargar las posiciones iniciales de donde dibujar
+	ldr posx,=posBrendanx
+	ldr posx,[posx]
+	ldr posy,=posBrendany
+	ldr posy,[posy]
+	
+	dibujosA:
+		pausa
+		paso1A:
+		ldr dimensionesBrendan, =altofrente
+		ldr iBrendan, =imagenfrente
+		coordenadas posx,posy
+		ldrh r2, [dimensionesBrendan,#2] // Ancho 
+		ldrh r3, [dimensionesBrendan] // Alto
+		push {iBrendan}
+		bl drawImage
+		add posy,#5
+		
+		
+		pausa
+		paso2A:
+		ldr dimensionesBrendan, =altofrente1
+		ldr iBrendan, =imagenfrente1
+		coordenadas posx,posy
+		ldrh r2, [dimensionesBrendan,#2] // Ancho 
+		ldrh r3, [dimensionesBrendan] // Alto
+		push {iBrendan}
+		bl drawImage
+		add posy,#5
+		
+		
+		pausa
+		paso3A:
+		ldr dimensionesBrendan, =altofrente2
+		ldr iBrendan, =imagenfrente2
+		coordenadas posx,posy
+		ldrh r2, [dimensionesBrendan,#2] // Ancho 
+		ldrh r3, [dimensionesBrendan] // Alto
+		push {iBrendan}
+		bl drawImage
+		add posy,#5
+		guardarY posy
 		
 	pop {r4-r12}
 	pop {pc}
@@ -200,6 +333,14 @@ leerTeclas:
 	push {lr}
 	push {r4-r12}
 	mov caracter,r0
+	
+	@ver la badera si ya se paso la pantalla de inicio
+	ldr r0,=banderaInicio
+	ldr r0,[r0]
+	cmp r0,#0
+	bne derecha
+	mov r1,#194
+	str r1,[r0]
 	enter:
 		cmp caracter,#'\n'
 		bne derecha
@@ -210,9 +351,7 @@ leerTeclas:
 	derecha:
 		cmp caracter,#200
 		bne izq
-		ldr r0,=imagenderecha @direccion de la imagen
-		ldr r1,=altoderecha @alto de la imagen
-		bl DibujarPersonaje
+		bl CaminarDerecha
 		b leerteclasfin
 	izq:
 		cmp caracter,#201
@@ -220,21 +359,20 @@ leerTeclas:
 		ldr r0,=imagenizquierda @direccion de la imagen
 		ldr r1,=altoizquierda @alto de la imagen
 		bl DibujarPersonaje
+		ldr r0,=posBrendany
+		ldr r0,[r0]
+		sub r0,r0,#5
+		guardarY r0
 		b leerteclasfin
-		
 	arri:
 		cmp caracter,#202
 		bne abaj
-		ldr r0,=imagenfrente @direccion de la imagen
-		ldr r1,=altofrente @alto de la imagen
-		bl DibujarPersonaje
+		bl CaminarArriba
 		b leerteclasfin
 	abaj:
 		cmp caracter,#203
 		bne leerteclasfin
-		ldr r0,=imagenatras @direccion de la imagen
-		ldr r1,=altoatras @alto de la imagen
-		bl DibujarPersonaje
+		bl CaminarAbajo
 		
 	leerteclasfin:
 	pop {r4-r12}
@@ -249,3 +387,5 @@ posFondoy:	.int 0
 @variable que contiene la posicion y donde dibujar la esquina superior izq de la image
 .globl posBrendany
 	posBrendany:	.int	467
+banderaInicio: .int 0
+

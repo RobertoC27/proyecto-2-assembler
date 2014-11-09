@@ -389,16 +389,23 @@ drawImage:
 	drawRow$:
 		
 		mov x,width
-		
+		push {r5}
+		ldr r5,=65535
 		drawPixel$:
 			ldrh colour,[image,countPix]
+			@cmp colour,r5
+			@beq continuar
+			
 			strh colour,[fbAddr]
+			
+			continuar:
 			add fbAddr,#2
 			add countPix,#2
 			sub x,#1
 	
 			teq x,#0
 			bne drawPixel$
+		pop {r5}
 		
 		//(1024-image width)*2 para dibujar el cuadrado
 		ldr r8,=1024

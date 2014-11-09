@@ -55,43 +55,19 @@ main:
 	
 reset$:
 	mov sp,#0x8000
-	dib:
+	
+	
 	mov r0,#'2'
 	bl DibujarFondo
 	
 	@DIBUJAR EL FONDO Y EL PERSONAJE EN LA POSICION INICIAL
-		
+	dib:
 		lec1:
-		leerCaracter
-		cmp r0,#0
+			leerCaracter
+			cmp r0,#0
 		beq lec1
+		
 		bl leerTeclas
-		
-		ya:
-		ldr r0,=imagenizquierda @direccion de la imagen
-		ldr r1,=altoizquierda @alto de la imagen
-		bl DibujarPersonaje
-		
-		mov r0,#200
-		mov r1,#200
-		mov r2,#18
-		mov r3,#24
-		bl dibujarRectangulo
-		asignarx #300
-		asignary #600
-		bl CaminarDerecha
-		
-		asignarx #800
-		asignary #200
-		mov r5,#0
-		cicl:
-		bl CaminarDerecha
-		cmp r5,#1
-		addlt r5,#1
-		blt cicl
-		
-		asignarx #100
-		asignary #100
 		leerCaracter
 		bl leerTeclas
 	b dib
