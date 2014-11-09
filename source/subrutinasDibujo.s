@@ -4,11 +4,13 @@ Angel Morales - 13332
 archivo fuente para el proyecto #2 de assembler 
 subrutinas para dibujar personajes y fondos en pantalla
 */
+@macro que guarda el valor indicado en la etiqueta para la posicion x del personaje
 .macro guardarX x
 	ldr r0,=posBrendanx
 	mov r1,\x
 	str r1,[r0]
 .endm
+@macro que guarda el valor indicado en la etiqueta para la posicion x del personaje
 .macro guardarY y
 	ldr r0,=posBrendany
 	str \y,[r0]
@@ -101,15 +103,17 @@ DibujarPersonaje:
 	.unreq dimensionesBrendan
 	.unreq iBrendan
 
-
+@ macro que mueve coordenadas x,y a r0,r1 para ser utilizadas por drawImage
 .macro coordenadas x,y
 	mov r0,\x
 	mov r1,\y
 .endm
+@ macro para hacer pausa de 0.1 seg
 .macro pausa
 	ldr r0,=100000
 	bl Wait
 .endm
+@macro que dibuja rectangulo en las coordenadas indicadas
 .macro rectangulo x0,y0,ancho,alto
 	mov r0,\x0
 	mov r1,\y0
@@ -279,9 +283,9 @@ las coordenadas para dibujar el personaje
 	ldr posy,=posBrendany
 	ldr posy,[posy]
 	
-	dibujosA:
+	dibujosArr:
 		pausa
-		paso1A:
+		paso1Arr:
 		ldr dimensionesBrendan, =altofrente
 		ldr iBrendan, =imagenfrente
 		coordenadas posx,posy
@@ -293,7 +297,7 @@ las coordenadas para dibujar el personaje
 		
 		
 		pausa
-		paso2A:
+		paso2Arr:
 		ldr dimensionesBrendan, =altofrente1
 		ldr iBrendan, =imagenfrente1
 		coordenadas posx,posy
@@ -305,7 +309,7 @@ las coordenadas para dibujar el personaje
 		
 		
 		pausa
-		paso3A:
+		paso3Arr:
 		ldr dimensionesBrendan, =altofrente2
 		ldr iBrendan, =imagenfrente2
 		coordenadas posx,posy
