@@ -1,3 +1,9 @@
+/*
+Roberto Chiroy -13027
+Angel Morales - 13332
+archivo fuente para el proyecto #2 de assembler 
+subrutinas para dibujar personajes y fondos en pantalla
+*/
 .macro guardarX x
 	ldr r0,=posBrendanx
 	mov r1,\x
@@ -194,7 +200,13 @@ leerTeclas:
 	push {lr}
 	push {r4-r12}
 	mov caracter,r0
-	
+	enter:
+		cmp caracter,#'\n'
+		bne derecha
+		mov r0,#'1'
+		bl DibujarFondo
+		b leerteclasfin
+		
 	derecha:
 		cmp caracter,#200
 		bne izq
@@ -223,8 +235,6 @@ leerTeclas:
 		ldr r0,=imagenatras @direccion de la imagen
 		ldr r1,=altoatras @alto de la imagen
 		bl DibujarPersonaje
-		
-		
 		
 	leerteclasfin:
 	pop {r4-r12}

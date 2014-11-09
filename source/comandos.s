@@ -1,3 +1,9 @@
+/*
+Roberto Chiroy -13027
+Angel Morales - 13332
+archivo fuente para el proyecto #2 de assembler 
+subrutinas para ejecutar comandos ingresados por el usuario
+*/
 .globl leerComando
 leerComando:
 	push {lr}

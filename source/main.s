@@ -1,4 +1,9 @@
-
+/*
+Roberto Chiroy -13027
+Angel Morales - 13332
+archivo fuente para el proyecto #2 de assembler 
+main encargado interaccion con el usuario
+*/
 .section .init
 .globl _start
 _start:
@@ -50,17 +55,18 @@ main:
 	
 reset$:
 	mov sp,#0x8000
-	
+	dib:
+	mov r0,#'2'
+	bl DibujarFondo
 	
 	@DIBUJAR EL FONDO Y EL PERSONAJE EN LA POSICION INICIAL
-		lec:
-		@b leerComando 
+		
 		lec1:
 		leerCaracter
 		cmp r0,#0
 		beq lec1
-		bl DibujarFondo
-		b lec
+		bl leerTeclas
+		
 		ya:
 		ldr r0,=imagenizquierda @direccion de la imagen
 		ldr r1,=altoizquierda @alto de la imagen
@@ -88,7 +94,7 @@ reset$:
 		asignary #100
 		leerCaracter
 		bl leerTeclas
-	b lec
+	b dib
 	
 	end$:
 	b end$
