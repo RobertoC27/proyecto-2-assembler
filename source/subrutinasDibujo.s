@@ -364,9 +364,9 @@ leerTeclas:
 		ldr r1,=altoizquierda @alto de la imagen
 		bl DibujarPersonaje
 		ldr r0,=posBrendany
-		ldr r0,[r0]
-		sub r0,r0,#5
-		guardarY r0
+		ldr r3,[r0]
+		sub r3,r3,#5
+		guardarY r3
 		b leerteclasfin
 	arri:
 		cmp caracter,#202
