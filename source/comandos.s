@@ -62,25 +62,24 @@ leerComando:
 	
 	loopContinue$:
 	bl TerminalDisplay
-	bl TerminalClear
 	b finCommand
 	
 	juego:
 	ldr r0,=pruebajuego
 	mov r1,#pruebajuegoEnd-pruebajuego
-	bL Print
+	bl Print
 	b finCommand
 	
 	instrucciones:
 	ldr r0,=pruebainstrucciones
 	mov r1,#pruebainstruccionesEnd-pruebainstrucciones
-	bL Print
+	bl Print
 	b finCommand
 	
 	vocalnumero:
 	ldr r0,=pruebainstrucciones
 	mov r1,#pruebainstruccionesEnd-pruebainstrucciones
-	bL Print
+	bl Print
 	
 	finCommand:
 	pop {r4-r12}

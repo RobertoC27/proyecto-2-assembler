@@ -54,7 +54,7 @@ reset$:
 	
 	@DIBUJAR EL FONDO Y EL PERSONAJE EN LA POSICION INICIAL
 		lec:
-		bl leerComando 
+		@b leerComando 
 		lec1:
 		leerCaracter
 		cmp r0,#0
