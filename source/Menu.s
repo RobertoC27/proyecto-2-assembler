@@ -83,6 +83,8 @@ Menu:
 	
 	fin:
 	pop {r4-r12}
+	.unreq caracter
+	.unreq direccion
 	pop {pc}
 
 
@@ -123,6 +125,7 @@ Dificultad:
 	b ingreso
 	salidaDif:
 	pop {r4-r12}
+	.unreq caracter
 	pop {pc}
 .section .data
 .align 2
