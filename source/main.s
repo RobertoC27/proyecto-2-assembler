@@ -26,6 +26,11 @@ b main
 	bl KeyboardUpdate
 	bl KeyboardGetChar
 .endm
+.macro dibujarImagen x,y
+	ldr r0,=\x
+	ldr r1,=\y
+	bl DibujarPersonaje
+.endm
 .section .text
 
 main:
@@ -60,20 +65,31 @@ reset$:
 	mov sp,#0x8000
 	
 	@ el 2 indica que debe pintar la imagen de bienvenida al juego
+	
 	mov r0,#'2'
 	bl DibujarFondo
+	bl leerTeclas
+	asignarx #100
+	asignary #110
+	dibujarImagen imagenfrente,altofrente
 	
 	@DIBUJAR EL FONDO Y EL PERSONAJE EN LA POSICION INICIAL
 	dib:
-		@ leer el caracter ingresado para 
-		lec1:
-			leerCaracter
-			cmp r0,#0
-		beq lec1
+		@ leer el caracter ingresado por el usuario
 		
+		asignarx #0
+		asignary #0
+		bl Dificultad
+		
+		asignarx #400
+		asignary #400
+		bl Menu
+		
+		asignarx #900
+		asignary #600
 		bl leerTeclas
-		leerCaracter
-		bl leerTeclas
+		ldr r0,=1000000
+		bl Wait
 	b dib
 	
 	end$:

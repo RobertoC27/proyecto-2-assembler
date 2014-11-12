@@ -15,6 +15,11 @@ subrutinas para dibujar personajes y fondos en pantalla
 	ldr r0,=posBrendany
 	str \y,[r0]
 .endm
+.macro dibujarImagen x,y
+	ldr r0,=\x
+	ldr r1,=\y
+	bl DibujarPersonaje
+.endm
 /*
 subrutina que dibuja el fondo completo en la pantalla
 parametros:
@@ -121,6 +126,10 @@ DibujarPersonaje:
 	mov r3,\alto
 	bl dibujarRectangulo
 .endm
+.macro dibujarCueva
+	mov r0,#'1'
+	bl DibujarFondo
+.endm
 /*
 subrutina que hace la animacion de caminar del personaje
 parametros:
@@ -155,7 +164,8 @@ las coordenadas para dibujar el personaje
 		ldrh r3, [dimensionesBrendan] // Alto
 		push {iBrendan}
 		bl drawImage
-		@rectangulo posx,posy,#5,#24
+		pausa
+		dibujarCueva
 		add posx,#5
 		
 		
@@ -168,7 +178,8 @@ las coordenadas para dibujar el personaje
 		ldrh r3, [dimensionesBrendan] // Alto
 		push {iBrendan}
 		bl drawImage
-		@rectangulo posx,posy,#5,#24
+		pausa
+		dibujarCueva
 		add posx,#5
 		
 		
@@ -181,8 +192,6 @@ las coordenadas para dibujar el personaje
 		ldrh r3, [dimensionesBrendan] // Alto
 		push {iBrendan}
 		bl drawImage
-		@rectangulo posx,posy,#5,#24
-		
 		add posx,#5
 		guardarX posx
 		
@@ -226,6 +235,8 @@ las coordenadas para dibujar el personaje
 		ldrh r3, [dimensionesBrendan] // Alto
 		push {iBrendan}
 		bl drawImage
+		pausa
+		dibujarCueva
 		sub posy,#5
 		
 		
@@ -238,6 +249,8 @@ las coordenadas para dibujar el personaje
 		ldrh r3, [dimensionesBrendan] // Alto
 		push {iBrendan}
 		bl drawImage
+		pausa
+		dibujarCueva
 		sub posy,#5
 		
 		
@@ -293,6 +306,8 @@ las coordenadas para dibujar el personaje
 		ldrh r3, [dimensionesBrendan] // Alto
 		push {iBrendan}
 		bl drawImage
+		pausa
+		dibujarCueva
 		add posy,#5
 		
 		
@@ -305,6 +320,8 @@ las coordenadas para dibujar el personaje
 		ldrh r3, [dimensionesBrendan] // Alto
 		push {iBrendan}
 		bl drawImage
+		pausa
+		dibujarCueva
 		add posy,#5
 		
 		
@@ -327,6 +344,18 @@ las coordenadas para dibujar el personaje
 	.unreq dimensionesBrendan
 	.unreq iBrendan
 /*
+macro que cambia la bandera de la posicion del personaje
+0-> viendo arriba
+1-> viendo a la dercha
+2->viendo a la izquieda
+3->viendo abajo
+*/
+.macro banderaPosicion num
+	ldr r0,=Facing
+	mov r1,\num
+	str r1,[r0]
+.endm
+/*
 subrutina que se encarga de hacer acciones segun la tecla presionada
 parámetros:
 r0->caracter ingresado
@@ -336,6 +365,12 @@ leerTeclas:
 	caracter .req r6
 	push {lr}
 	push {r4-r12}
+	ent:
+	bl KeyboardUpdate
+	bl KeyboardGetChar
+	cmp r0,#0
+	beq ent
+	
 	mov caracter,r0
 	
 	@ver la badera si ya se paso la pantalla de inicio
@@ -343,41 +378,52 @@ leerTeclas:
 	ldr r0,[r0]
 	cmp r0,#0
 	bne derecha
-	mov r1,#194
-	str r1,[r0]
 	enter:
 		cmp caracter,#'\n'
 		bne derecha
 		mov r0,#'1'
 		bl DibujarFondo
+		ldr r0,=banderaInicio
+		mov r1,#194
+		str r1,[r0]
 		b leerteclasfin
-		
+	
 	derecha:
+		ldr r0,=banderaInicio
+		ldr r0,[r0]
+		cmp r0,#0
+		beq ent
+		
 		cmp caracter,#200
 		bne izq
 		bl CaminarDerecha
+		banderaPosicion #1
 		b leerteclasfin
 	izq:
 		cmp caracter,#201
 		bne arri
+		/*
 		ldr r0,=imagenizquierda @direccion de la imagen
 		ldr r1,=altoizquierda @alto de la imagen
-		bl DibujarPersonaje
-		ldr r0,=posBrendany
+		bl DibujarPersonaje*/
+		dibujarImagen imagenizquierda,altoizquierda
+		ldr r0,=posBrendanx
 		ldr r3,[r0]
 		sub r3,r3,#5
-		guardarY r3
+		guardarX r3
+		banderaPosicion #2
 		b leerteclasfin
 	arri:
 		cmp caracter,#202
 		bne abaj
 		bl CaminarArriba
+		banderaPosicion #0
 		b leerteclasfin
 	abaj:
 		cmp caracter,#203
 		bne leerteclasfin
 		bl CaminarAbajo
-		
+		banderaPosicion #3
 	leerteclasfin:
 	pop {r4-r12}
 	pop {pc}
@@ -390,6 +436,7 @@ posFondoy:	.int 0
 	posBrendanx:	.int	700
 @variable que contiene la posicion y donde dibujar la esquina superior izq de la image
 .globl posBrendany
-	posBrendany:	.int	467
+	posBrendany:	.int	200
 banderaInicio: .int 0
-
+.globl Facing
+Facing: .int 0
