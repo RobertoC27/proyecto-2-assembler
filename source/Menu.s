@@ -1,3 +1,9 @@
+/*
+Roberto Chiroy -13027
+Angel Morales - 13332
+archivo fuente para el proyecto #2 de assembler 
+subrutinas para los diferentes menús que el usuario debe usar
+*/
 .macro dibujarImagen dir
 	ldr r0,=imagen\dir
 	ldr r1,=alto\dir
@@ -12,6 +18,11 @@ mov r1,\num
 ldr r0,=\var
 str r1,[r0]
 .endm
+/*
+subrutina que sirve para escoger una opcion en el menú de batalla
+no recibe parámetros 
+ni devuelve nada
+*/
 .globl Menu
 Menu:
 	push {lr}
@@ -26,12 +37,12 @@ Menu:
 	beq ent
 	mov caracter,r0
 	cmp caracter,#'\n'
-	beq salidaMenu
+	beq salidaMenu @solo sale de la rutina si presiona enter
 	
 	pelear:
 	cmp caracter,#'0'
 	bne pokeball
-	banderaPosicion #0,opcionMenu
+	banderaPosicion #0,opcionMenu @cambiar el valor de la bandera 
 	b ent
 	
 	pokeball:
@@ -51,17 +62,20 @@ Menu:
 		bl DibujarFondo
 		ldr r8,=opcionMenu
 		ldr r8,[r8]
+	@dibujar la accion correspondiente a la tecla presionada
 	pelea:	
 		cmp r8,#0
 		bne atrapar
 		dibujarImagen atras2
 		
 		b fin
+	
 	atrapar:
 		cmp r8,#1
 		bne huida
 		dibujarImagen derecha2
 		b fin
+	
 	huida:
 		cmp r8,#2
 		dibujarImagen izquierda
@@ -72,6 +86,11 @@ Menu:
 	pop {pc}
 
 
+/*
+subrutina que permite al usuario escoger la dificultad en la que quiere jugar
+no recibe parametros
+ni devuelve nada
+*/
 .globl Dificultad
 Dificultad:
 	push {lr}
@@ -87,7 +106,7 @@ Dificultad:
 	mov caracter,r0
 	cmp caracter,#'\n'
 	bne arribaDif
-	b salidaDif
+	b salidaDif @solo sale de la rutina si presiona enter
 	
 	arribaDif:
 	cmp caracter,#202

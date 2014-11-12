@@ -15,6 +15,7 @@ subrutinas para dibujar personajes y fondos en pantalla
 	ldr r0,=posBrendany
 	str \y,[r0]
 .endm
+@macro que dibuja la imagen con direccion (X) y alto (Y)
 .macro dibujarImagen x,y
 	ldr r0,=\x
 	ldr r1,=\y
@@ -421,7 +422,7 @@ leerTeclas:
 		b leerteclasfin
 	abaj:
 		cmp caracter,#203
-		bne leerteclasfin
+		bne ent @ si no es una tecla valida vuelve a esperar el ingreso de otra tecla
 		bl CaminarAbajo
 		banderaPosicion #3
 	leerteclasfin:
