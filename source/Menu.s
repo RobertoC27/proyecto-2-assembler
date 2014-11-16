@@ -18,18 +18,22 @@ mov r1,\num
 ldr r0,=\var
 str r1,[r0]
 .endm
+.macro DibujarBatalla dificultad,fondo
+	mov r0,\fondo
+	bl DibujarFondo
+.endm
 /*
 subrutina que sirve para escoger una opcion en el menú de batalla
 no recibe parámetros 
 ni devuelve nada
 */
-.globl Menu
-Menu:
+.globl MenuPelea
+MenuPelea:
 	push {lr}
 	caracter .req r4
 	direccion .req r8
 	push {r4-r12}
-	dibujarImagen frente2
+	banderaPosicion #0,opcionMenu
 	
 	ent:
 	inputCar
@@ -58,8 +62,6 @@ Menu:
 	b ent
 	
 	salidaMenu:
-		mov r0,#'1'
-		bl DibujarFondo
 		ldr r8,=opcionMenu
 		ldr r8,[r8]
 	@dibujar la accion correspondiente a la tecla presionada
@@ -67,7 +69,6 @@ Menu:
 		cmp r8,#0
 		bne atrapar
 		dibujarImagen atras2
-		
 		b fin
 	
 	atrapar:
@@ -93,13 +94,14 @@ subrutina que permite al usuario escoger la dificultad en la que quiere jugar
 no recibe parametros
 ni devuelve nada
 */
-.globl Dificultad
-Dificultad:
+.globl EscogerDificultad
+EscogerDificultad:
 	push {lr}
 	caracter .req r4
 	push {r4-r12}
 	
-	dibujarImagen frente1
+	dibujarImagen easy
+	banderaPosicion #0,posDific
 	
 	ingreso:
 	inputCar
@@ -111,27 +113,64 @@ Dificultad:
 	b salidaDif @solo sale de la rutina si presiona enter
 	
 	arribaDif:
-	cmp caracter,#202
+	cmp caracter,#203
 	bne abajoDif
-	dibujarImagen frente1
+	dibujarImagen easy
 	banderaPosicion #0,posDific
 	b ingreso
 	
 	abajoDif:
-	cmp caracter,#203
+	cmp caracter,#202
 	bne ingreso
-	dibujarImagen atras1
+	dibujarImagen hard
 	banderaPosicion #1,posDific
 	b ingreso
+	
 	salidaDif:
+	ldr r5,=posDific
+	ldr r5,[r5]
+	cmp r5,#0
+	moveq r0,#'3'
+	bleq DibujarFondo
+	
+	ldr r5,=posDific
+	ldr r5,[r5]
+	cmp r5,#1
+	moveq r0,#'4'
+	bleq DibujarFondo
+	
 	pop {r4-r12}
 	.unreq caracter
 	pop {pc}
+
+.globl Facil	
+Facil:
+	push {lr}
+	push {r4-r12}
+	DibujarBatalla facil,#'5'
+	bl MenuPelea
+	
+	pop {r4-r12}
+	pop {pc}
+	
+.globl Dificil
+Dificil:
+	push {lr}
+	push {r4-r12}
+	DibujarBatalla dificil,#'6'
+	bl MenuPelea
+	
+	
+	pop {r4-r12}
+	pop {pc}
+	
 .section .data
 .align 2
 @bandera para la dificultad 
 @0-> facil
 @1-> dificil
+.globl posDific
 posDific: .int 0
+.globl opcionMenu
 opcionMenu: .int 0
 

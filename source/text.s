@@ -1,17 +1,3 @@
-/******************************************************************************
-*	text.s
-*	 by Alex Chadwick
-*
-*	A sample assembly code implementation of the input02 operating system.
-*	See main.s for details.
-*
-*	text.s contains code to do with manipulating text
-******************************************************************************/
-
-/* 
-* ReverseString reverses a string, with pointer in r0, and length in r1.
-* C++ Signature: void ReverseString(char* string, u32 length);
-*/
 .globl ReverseString
 ReverseString:
 	start .req r0

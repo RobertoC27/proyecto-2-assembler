@@ -31,6 +31,14 @@ b main
 	ldr r1,=\y
 	bl DibujarPersonaje
 .endm
+.macro cargarEtiqueta nombre,registro
+	ldr \registro,=nombre
+	ldr \registro,[\registro]
+.endm
+.macro pausa
+	ldr r0,=1000000
+	bl Wait
+.endm
 .section .text
 
 main:
@@ -65,42 +73,42 @@ reset$:
 	mov sp,#0x8000
 	
 	@ el 2 indica que debe pintar la imagen de bienvenida al juego
-	
 	mov r0,#'2'
 	bl DibujarFondo
-	bl leerTeclas
+	bl leerTeclas @ espera a que presione enter para avanzar
+	
 	asignarx #100
 	asignary #110
 	dibujarImagen imagenfrente,altofrente
 	
 	@DIBUJAR EL FONDO Y EL PERSONAJE EN LA POSICION INICIAL
 	dib:
-		@ leer el caracter ingresado por el usuario
-		
 		asignarx #0
 		asignary #0
-		bl Dificultad
+		bl EscogerDificultad
 		
+		ldr r0,=posDific
+		ldr r0,[r0]
+		cmp r0,#0
+		bne dificDif
+		
+		dificFac:
+		bl Facil
+		pausa
+		b dib
+		
+		dificDif:
+		bl Dificil
+		pausa
+		b dib
 		asignarx #400
 		asignary #400
-		bl Menu
+		bl MenuPelea
+		
 		
 		asignarx #900
 		asignary #600
-		bl leerTeclas
-		ldr r0,=1000000
-		bl Wait
+		@bl leerTeclas
+		
 	b dib
 	
-	end$:
-	b end$
-
-
-
-.section .data
-.align 2
-posFondox:	.int 0
-posFondoy:	.int 0
-posFondoPx: .int 503
-posFondoPy: .int 467
-posBrendanyFinal:	.int	155

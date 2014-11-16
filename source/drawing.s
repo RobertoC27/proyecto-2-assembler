@@ -390,11 +390,11 @@ drawImage:
 		
 		mov x,width
 		push {r5}
-		ldr r5,=65535
+		ldr r5,=64889
 		drawPixel$:
 			ldrh colour,[image,countPix]
-			@cmp colour,r5
-			@beq continuar
+			cmp colour,r5
+			beq continuar
 			
 			strh colour,[fbAddr]
 			

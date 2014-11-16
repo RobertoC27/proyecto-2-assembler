@@ -41,3 +41,11 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+build
+imagenes
+\kernel.ld
+\kernel.list
+\kernel.map
+\makefile
+\license
+\libcsud.a

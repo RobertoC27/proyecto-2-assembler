@@ -21,12 +21,17 @@ subrutinas para dibujar personajes y fondos en pantalla
 	ldr r1,=\y
 	bl DibujarPersonaje
 .endm
+.macro cargarImagen nombre,registro
+	ldr \registro,=nombre
+.endm
 /*
 subrutina que dibuja el fondo completo en la pantalla
 parametros:
 r0-> numero de la imagen de fondo a dibujar
 1 es la cueva
 2 es el mewtwo
+3 es fondo facil
+4 es fondo dificil
 */
 .globl DibujarFondo
 DibujarFondo:
@@ -37,21 +42,10 @@ DibujarFondo:
 	push {lr}
 	push {r4-r12}
 	mov caracter, r0
-	cmp caracter,#'1'
-	bne mewtwo
-	ldr posicionFondo, =posFondox
-	ldr dimensionesFondo, =altocueva
-	ldr fondo, =imagencueva
-	ldr r0,[posicionFondo] // Posicion en x
-	ldr r1,[posicionFondo,#4] // Posicion en y
-	ldrh r2,[dimensionesFondo,#2] // Ancho 
-	ldrh r3,[dimensionesFondo] // Alto
-	push {fondo}
-	bl drawImage
-	b finDib
+	
 	mewtwo:
 	cmp caracter,#'2'
-	bne finDib
+	bne fondoFacil
 	ldr posicionFondo, =posFondox
 	ldr dimensionesFondo, =altostartscreen_uvg
 	ldr fondo, =imagenstartscreen_uvg
@@ -61,6 +55,64 @@ DibujarFondo:
 	ldrh r3,[dimensionesFondo] // Alto
 	push {fondo}
 	bl drawImage
+	b finDib
+	
+	fondoFacil:
+	cmp caracter,#'3'
+	bne fondoDificil
+	ldr posicionFondo, =posFondox
+	ldr dimensionesFondo, =altocampomesprit
+	ldr fondo, =imagencampomesprit
+	ldr r0,[posicionFondo] // Posicion en x
+	ldr r1,[posicionFondo,#4] // Posicion en y
+	ldrh r2,[dimensionesFondo,#2] // Ancho 
+	ldrh r3,[dimensionesFondo] // Alto
+	push {fondo}
+	bl drawImage
+	b finDib
+	
+	fondoDificil:
+	cmp caracter,#'4'
+	bne peleaFacil
+	ldr posicionFondo, =posFondox
+	ldr dimensionesFondo, =altocampomewtwo
+	ldr fondo, =imagencampomewtwo
+	ldr r0,[posicionFondo] // Posicion en x
+	ldr r1,[posicionFondo,#4] // Posicion en y
+	ldrh r2,[dimensionesFondo,#2] // Ancho 
+	ldrh r3,[dimensionesFondo] // Alto
+	push {fondo}
+	bl drawImage
+	b finDib
+	
+	peleaFacil:
+	cmp caracter,#'5'
+	bne peleaDificil
+	ldr posicionFondo, =posFondox
+	ldr dimensionesFondo, =altopeleamesprit
+	ldr fondo, =imagenpeleamesprit
+	ldr r0,[posicionFondo] // Posicion en x
+	ldr r1,[posicionFondo,#4] // Posicion en y
+	ldrh r2,[dimensionesFondo,#2] // Ancho 
+	ldrh r3,[dimensionesFondo] // Alto
+	push {fondo}
+	bl drawImage
+	b finDib
+	
+	peleaDificil:
+	cmp caracter,#'6'
+	bne finDib
+	ldr posicionFondo, =posFondox
+	ldr dimensionesFondo, =altopeleamewtwo
+	ldr fondo, =imagenpeleamewtwo
+	ldr r0,[posicionFondo] // Posicion en x
+	ldr r1,[posicionFondo,#4] // Posicion en y
+	ldrh r2,[dimensionesFondo,#2] // Ancho 
+	ldrh r3,[dimensionesFondo] // Alto
+	push {fondo}
+	bl drawImage
+	
+	
 	finDib:
 	pop {r4-r12}
 	pop {pc}
@@ -99,7 +151,6 @@ DibujarPersonaje:
 	push {iBrendan}
 	bl drawImage
 	
-	@add posx,#5
 	guardarX posx
 	
 	pop {r4-r12}
@@ -202,6 +253,70 @@ las coordenadas para dibujar el personaje
 	.unreq posy
 	.unreq dimensionesBrendan
 	.unreq iBrendan
+	
+.global CaminarIzquierda
+	CaminarIzquierda:
+	push {lr}
+	push {r4-r12}
+	posx .req r4
+	posy .req r5
+	dimensionesBrendan .req r6
+	iBrendan .req r7
+	@ posx final -> 503
+	
+	@cargar las posiciones iniciales de donde dibujar
+	ldr posx,=posBrendanx
+	ldr posx,[posx]
+	ldr posy,=posBrendany
+	ldr posy,[posy]
+	
+	dibujosI:
+		pausa
+		paso1I:
+		ldr dimensionesBrendan, =altoizquierda
+		ldr iBrendan, =imagenizquierda
+		coordenadas posx,posy
+		ldrh r2, [dimensionesBrendan,#2] // Ancho 
+		ldrh r3, [dimensionesBrendan] // Alto
+		push {iBrendan}
+		bl drawImage
+		pausa
+		dibujarCueva
+		sub posx,#5
+		
+		
+		pausa
+		paso2I:
+		ldr dimensionesBrendan, =altoizquierda1
+		ldr iBrendan, =imagenizquierda1
+		coordenadas posx,posy
+		ldrh r2, [dimensionesBrendan,#2] // Ancho 
+		ldrh r3, [dimensionesBrendan] // Alto
+		push {iBrendan}
+		bl drawImage
+		pausa
+		dibujarCueva
+		sub posx,#5
+		
+		
+		pausa
+		paso3I:
+		ldr dimensionesBrendan, =altoizquierda2
+		ldr iBrendan, =imagenizquierda2
+		coordenadas posx,posy
+		ldrh r2, [dimensionesBrendan,#2] // Ancho 
+		ldrh r3, [dimensionesBrendan] // Alto
+		push {iBrendan}
+		bl drawImage
+		sub posx,#5
+		guardarX posx
+		
+	pop {r4-r12}
+	pop {pc}
+	.unreq posx
+	.unreq posy
+	.unreq dimensionesBrendan
+	.unreq iBrendan		
 /*
 subrutina que hace la animacion de caminar del personaje
 parametros:
@@ -403,15 +518,7 @@ leerTeclas:
 	izq:
 		cmp caracter,#201
 		bne arri
-		/*
-		ldr r0,=imagenizquierda @direccion de la imagen
-		ldr r1,=altoizquierda @alto de la imagen
-		bl DibujarPersonaje*/
-		dibujarImagen imagenizquierda,altoizquierda
-		ldr r0,=posBrendanx
-		ldr r3,[r0]
-		sub r3,r3,#5
-		guardarX r3
+		bl CaminarIzquierda
 		banderaPosicion #2
 		b leerteclasfin
 	arri:
@@ -430,7 +537,9 @@ leerTeclas:
 	pop {pc}
 .section .data
 .align 2
+.globl posFondox
 posFondox:	.int 0
+.globl posFondoy
 posFondoy:	.int 0
 @variable que contiene la posicion x donde dibujar la esquina superior izq de la image
 .globl posBrendanx
